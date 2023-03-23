@@ -1,0 +1,31 @@
+---
+version: 0.2
+env:
+  variables:
+    VITE_GOOGLE_RECAPTCHA_SITE_KEY: 6Ldc_LcjAAAAAOXavbFuj-Vya9wXVCICs57CpUgy
+  
+phases:
+  install:
+    runtime-versions:
+      nodejs: 16
+  pre_build:
+    commands:
+      - echo Installing source NPM dependencies...
+      - npm install
+      - npm run lint
+      - npm run check-types
+      - npm run test:run
+  build:
+    commands:
+      - echo Build started...
+      - cd $CODEBUILD_SRC_DIR
+      - npm run build
+  post_build:
+    commands:
+      - echo Build completed...
+artifacts:
+  files:
+    - "**/*"
+  name: test-$(date +%Y-%m-%d)
+  base-directory: "$CODEBUILD_SRC_DIR/dist/"
+# test
